@@ -1,3 +1,5 @@
+#programming challenge 22
+
 num = int(input("Enter a number: "))
 factors = ""
 NumRange = int(num / 2 + 1)

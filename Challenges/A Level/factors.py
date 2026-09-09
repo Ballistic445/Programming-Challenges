@@ -1,3 +1,5 @@
+#programming challenge 21
+
 def Compare(a, b):
     if a == b: return "a"
     else: return a > b
