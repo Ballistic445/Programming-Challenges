@@ -1,6 +1,6 @@
 num = int(input("Enter a number: "))
 factors = ""
-NumRange = int(num / 2)
+NumRange = int(num / 2 + 1)
 
 for i in range(1, NumRange):
     if num % i == 0:
