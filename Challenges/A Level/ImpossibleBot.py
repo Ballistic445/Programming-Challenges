@@ -14,6 +14,14 @@ def EnterValue(Lower, Upper):
 def BoolFlip(x: bool):
     return not x
 
+ImpossibleBot = False
+setting = input("Do you want to play against the Easy bot? (y/n) \n>")
+if setting.lower() == "n":
+    print("Playing impossible bot...\n")
+    ImpossibleBot = True
+else:
+    print("Playing easy bot...\n")
+
 #init values
 Count = EnterValue(20, 30)
 ComputerTurn = False
@@ -35,12 +43,13 @@ while GameContinue:
         print("\nComputer turn:")
         x = 3
         #if the bot can reduce the number to one more than a factor of 4 it will
-        for i in range(Count -3, Count + 1):
-            if i % 4 == 1:
-                Count -= x
-                break
-            x -= 1
-        #if it can't it just reduces by random
+        if ImpossibleBot == True:
+            for i in range(Count -3, Count + 1):
+                if i % 4 == 1:
+                    Count -= x
+                    break
+                x -= 1
+        #if it can't it just reduces by random. This is the only option for easy mode
         if Count == CurrentCount:
             Count -= random.randint(1, 3)
     #user enters a value between 1 and 3
