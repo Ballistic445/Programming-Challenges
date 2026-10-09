@@ -1,4 +1,4 @@
-#programming challenge 38
+#programming challenge 38 + 49
 import random
 
 class Suit:
