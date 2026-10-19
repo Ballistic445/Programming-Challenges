@@ -9,7 +9,7 @@ def Choose(Message, Length: list):
         if out.isnumeric() and len(out) in Length:
             return out
 
-def Convert(Months, ):
+def Convert(Months):
     MonthsToDays = {1:31, 2:28, 3:31, 4:30, 5:31, 6:30, 7:31, 8:31, 9:30, 10:31, 11:30, 12:31}
     out = 0
     for i in range(1, Months):

@@ -44,6 +44,32 @@ def DisplayGrid(Grid):
         for j in Grid[i]:
             print(f"{j}    ", end = "")
         print("\n")   
+
+def CanCompleteLine(Grid, Icon):
+    VertCount = 0
+    HorizontalCount = 0
+    Index = 0
+    for i in range(len(Grid)):
+        for j in range(len(Grid)):
+            if Icon == Grid[i][j]:
+                HorizontalCount += 1
+            elif "-" == Grid[i][j]:
+                Index = i * 3 + j + 1
+        if HorizontalCount == 2 and Index != 0:
+            return Index
+        else:
+            HorizontalCount = 0
+    for i in range(len(Grid)):
+        for j in range(len(Grid)):
+            if Icon == Grid[j][i]:
+                VertCount += 1
+            elif "-" == Grid[j][i]:
+                Index = j * 3 + i + 1
+        if VertCount == 2 and Index != 0:
+            return Index
+        else:
+            VertCount = 0
+    return ""
    
 ReferenceGrid = [[j + (3 * i) + 1 for j in range(3)] for i in range(3)]   
 print("Reference:")
@@ -66,6 +92,9 @@ DisplayGrid(Grid)
 while not GameCompleted:
     Valid = False
     Turn += 1
+    Centre = Grid[1][1]
+    Sides = [Grid[0][1], Grid[1][0], Grid[1][2], Grid[2][1]]
+    Corners = [Grid[0][0], Grid[0][2], Grid[2][0], Grid[2][2]]
     if Turn % 2 != 0:
         CurrentPlayer = P1
     else: 
@@ -74,7 +103,21 @@ while not GameCompleted:
     
     while Valid == False:
         if CurrentPlayer == P2 and VsSetting == "y":
-            CurrentPlayer.Index = random.randint(1, 9)
+            CanComplete = CanCompleteLine(Grid, CurrentPlayer.Icon)
+            if CanComplete == "":
+                CanComplete = CanCompleteLine(Grid, "X")
+            print(CanComplete)
+            if Turn == 2:
+                if "X" in Corners:
+                    CurrentPlayer.Index = 5
+                elif "X" in Centre:
+                    CurrentPlayer.Index = random.choice([1, 3, 7, 9])
+                elif "X" in Sides:
+                    CurrentPlayer.Index = 5
+            elif CanComplete != "":
+                CurrentPlayer.Index = CanComplete
+            else: 
+                CurrentPlayer.Index = random.randint(1, 9)
         else:
             CurrentPlayer.Index = int(Choose("Enter a number (1-9)", [str(i) for i in range(1, 10)]))
         Grid, Valid = CurrentPlayer.Replace(Grid)
