@@ -1,4 +1,6 @@
 #Programming challenge 66
+import math
+
 def InitGrid():
     Grid = [["-" for j in range(10)] for i in range(10)]
     Count = ord("A")
@@ -67,11 +69,16 @@ class Player():
     def DisplayGrids(self):
         CombinedGrid = []
         for i in range(len(self.Grid)):
-            for j in range(len(self.Grid[i])):
-                CombinedGrid[i].append(self.AttackGrid[i][j])
+            CombinedGrid.append([])
+            RowSize = len(self.Grid[i]) + len(self.AttackGrid[i])
+            for j in range(RowSize):
+                if j > RowSize / 2:
+                    CombinedGrid[i].append(self.Grid[i][j % math.ceil(RowSize / 2)])
+                else:
+                    CombinedGrid[i].append(self.AttackGrid[i][j % math.ceil(RowSize / 2)])
         print("   ", end = "")
         for i in range(len(CombinedGrid)):
-            for j in range(len(self.Grid[i])):
+            for j in range(len(CombinedGrid[i])):
                 if j % 11 == 0 and j != 0 and i != 0:
                     print("       ", end = "")
                 elif j % 10 == 0 and i == 0 and j != 0:
@@ -108,22 +115,22 @@ P1 = Player("Player 1")
 P2 = Player("Player 2")
 
 #place ships
-#for i in range(2):
-#    if i % 2 == 0:
-#        CurrentPlayer = P1
-#    else:
-#        CurrentPlayer = P2
-#    print(f"{CurrentPlayer.Name}:")
-#    while len(CurrentPlayer.UnplacedShips) > 0:
-#        CurrentPlayer.DisplayGrid()
-#        SelectedShip = ChooseShip(CurrentPlayer.UnplacedShips)
-#        Orientation = Choose("Enter the orientation you want (Horizontal: h, Vertical: v): ", ["h", "v"])
-#        Choice = ChooseCoordinate("Enter the coordinates of The ship you want to place (Ship goes from that coordinate down/right):")
-#        Index = [ord(Choice[0]) % 64, int(Choice[1])]
-#        CurrentPlayer.PlaceShip(SelectedShip, Orientation, Index)
-#    CurrentPlayer.DisplayGrid()
-#    print("\nThis is Your Board.\n")
-#    input("Press ENTER to advance.   ")
+for i in range(2):
+    if i % 2 == 0:
+        CurrentPlayer = P1
+    else:
+        CurrentPlayer = P2
+    print(f"{CurrentPlayer.Name}:")
+    while len(CurrentPlayer.UnplacedShips) > 0:
+        CurrentPlayer.DisplayGrid()
+        SelectedShip = ChooseShip(CurrentPlayer.UnplacedShips)
+        Orientation = Choose("Enter the orientation you want (Horizontal: h, Vertical: v): ", ["h", "v"])
+        Choice = ChooseCoordinate("Enter the coordinates of The ship you want to place (Ship goes from that coordinate down/right):")
+        Index = [ord(Choice[0]) % 64, int(Choice[1])]
+        CurrentPlayer.PlaceShip(SelectedShip, Orientation, Index)
+    CurrentPlayer.DisplayGrid()
+    print("\nThis is Your Board.\n")
+    input("Press ENTER to advance.   ")
 
 #main game loop
 Count = 0
@@ -135,14 +142,14 @@ while True:
         CurrentPlayer = P2
         OpponentPlayer = P1
     print(f"Current Player: {CurrentPlayer.Name}")
+    print(CurrentPlayer.Grid)
     CurrentPlayer.DisplayGrids()
     Choice = ChooseCoordinate("Enter the coordinates of your attack:")
     Index = [ord(Choice[0]) % 64, int(Choice[1])]
-    if CurrentPlayer.Grid[Index[0]][Index[1]] != "X":
-        CurrentPlayer.Grid[Index[0]][Index[1]] = "X"
+    if CurrentPlayer.AttackGrid[Index[0]][Index[1]] != "X":
+        CurrentPlayer.AttackGrid[Index[0]][Index[1]] = "X"
     else:
         print("Space already entered.")
     Count += 1
-    CurrentPlayer.DisplayGrid()
     CurrentPlayer.DisplayGrids()
     input("Press ENTER to advance to the next player.   ")
