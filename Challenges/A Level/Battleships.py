@@ -40,11 +40,15 @@ def Choose(Message, Choices):
         if out in Choices:
             return out
 
+def FillerText():
+    for i in range(30):
+        print("-----------------------------------------------------------------------")
+
 class Ship():
     def __init__(self, Name, Length):
         self.Name = Name
         self.Length = Length
-        self.Lives = Length
+        self.Position = []
         
 class Player():
     def __init__(self, Name):
@@ -58,6 +62,16 @@ class Player():
         self.Carrier = Ship("Carrier", 5)
         self.Ships = [self.Destroyer, self.Submarine, self.Cruiser, self.Battleship, self.Carrier]
         self.UnplacedShips = self.Ships
+    
+    def CheckShipStatus(self):
+        for i in self.Ships:
+            Destroyed = True
+            for j in i.Position:
+                if self.Grid[j[0]][j[1]] == "H":
+                    Destroyed = False
+            if Destroyed:
+                print(f"{i.Name} Destroyed!")
+                self.Ships.remove(i)
         
     def DisplayGrid(self):
         print("   ", end = "")
@@ -98,6 +112,7 @@ class Player():
                     return 0
             for i in range(SelectedShip.Length):
                 self.Grid[Coordinate[0]][Coordinate[1] + i] = "H"
+                SelectedShip.Position.append([Coordinate[0], Coordinate[1] + i])
         elif Orientation == "v":
             for i in range(SelectedShip.Length):
                 try:
@@ -109,6 +124,7 @@ class Player():
                     return 0
             for i in range(SelectedShip.Length):
                 self.Grid[Coordinate[0] + i][Coordinate[1]] = "H"
+                SelectedShip.Position.append([Coordinate[0] + i, Coordinate[1]])
         self.UnplacedShips.remove(SelectedShip)
         
 P1 = Player("Player 1")
@@ -131,6 +147,7 @@ for i in range(2):
     CurrentPlayer.DisplayGrid()
     print("\nThis is Your Board.\n")
     input("Press ENTER to advance.   ")
+    CurrentPlayer.Ships = [CurrentPlayer.Destroyer, CurrentPlayer.Submarine, CurrentPlayer.Cruiser, CurrentPlayer.Battleship, CurrentPlayer.Carrier]
 
 #main game loop
 Count = 0
@@ -141,15 +158,27 @@ while True:
     else:
         CurrentPlayer = P2
         OpponentPlayer = P1
-    print(f"Current Player: {CurrentPlayer.Name}")
-    print(CurrentPlayer.Grid)
+    print(f"\n\nCurrent Player: {CurrentPlayer.Name}")
     CurrentPlayer.DisplayGrids()
-    Choice = ChooseCoordinate("Enter the coordinates of your attack:")
-    Index = [ord(Choice[0]) % 64, int(Choice[1])]
-    if CurrentPlayer.AttackGrid[Index[0]][Index[1]] != "X":
-        CurrentPlayer.AttackGrid[Index[0]][Index[1]] = "X"
-    else:
-        print("Space already entered.")
+    while True:
+        Choice = ChooseCoordinate("Enter the coordinates of your attack:")
+        Index = [ord(Choice[0]) % 64, int(Choice[1])]
+        if OpponentPlayer.Grid[Index[0]][Index[1]] == "-":
+            CurrentPlayer.AttackGrid[Index[0]][Index[1]] = "O"
+            OpponentPlayer.Grid[Index[0]][Index[1]] = "O"
+            break
+        elif OpponentPlayer.Grid[Index[0]][Index[1]] == "H":
+            CurrentPlayer.AttackGrid[Index[0]][Index[1]] = "X"
+            OpponentPlayer.Grid[Index[0]][Index[1]] = "X"
+            break
+        else:
+            print("Space already entered.")
     Count += 1
     CurrentPlayer.DisplayGrids()
-    input("Press ENTER to advance to the next player.   ")
+    OpponentPlayer.CheckShipStatus()
+    if len(OpponentPlayer.Ships) == 0:
+        print(f"\n\n{CurrentPlayer.Name} Wins!!!")
+        break
+    input("Press ENTER to advance.   ")
+    FillerText()
+    input("Swap to the next player, then press ENTER to advance.   ")
