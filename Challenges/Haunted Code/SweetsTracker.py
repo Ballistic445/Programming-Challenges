@@ -8,4 +8,24 @@ def AddRecord():
         if Count.isdigit():
             break
     with open("/workspaces/OCR-Programming-Challenges/Challenges/Haunted Code/SweetsTracker.txt", "a") as Records:
-        pass
+        Records.write(f"{Name} {Count}\n")
+        
+def ReadRecords():
+    with open("/workspaces/OCR-Programming-Challenges/Challenges/Haunted Code/SweetsTracker.txt", "r") as Records:
+        Items = [i.split(" ") for i in Records.readlines()]
+        SweetsList = [int(i[1]) for i in Items] 
+        for i in Items:
+            print(f"{i[0]}: {i[1]}")
+        return SweetsList
+   
+def FindBiggestNumber(NumsList):
+    BiggestNumber = 0
+    for i in NumsList:
+        if i > BiggestNumber:
+            BiggestNumber = i
+    return BiggestNumber
+    
+AddRecord()
+SweetsList = ReadRecords()
+BiggestNumber = FindBiggestNumber(SweetsList)
+print(f"Highest sweets count: {BiggestNumber}")
